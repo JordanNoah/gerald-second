@@ -7,10 +7,20 @@ const provider = {
         axios.defaults.headers.common.Authorization = `Bearer ${token}`
     },
     removeToken: () => {
-        axios.defaults.headers.common.Authorization = ''
+        delete axios.defaults.headers.common.Authorization
     },
     signin: async (body) => {
         return await axios.post(`/auth/sign-in`,body)
+    },
+    signout: async () => {
+        return await axios.delete(`/auth/sign-out`)
+    },
+    //students routes
+    getStudents: async () => {
+        return await axios.get(`/students`)
+    },
+    postStudent: async (body) => {
+        return await axios.post(`/students`,body)
     }
 }
 

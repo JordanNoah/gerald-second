@@ -1,14 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
-import { v4 as uuidv4 } from 'uuid';
-
+import provider from '../plugins/provider'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    jwt:null
+    jwt:localStorage.getItem('token')
   },
   getters: {
     getJwt(state){
@@ -16,10 +14,14 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    createJwt(state){
-      state.jwt = uuidv4()
+    createJwt(state, token){
+      localStorage.setItem('token',token)
+      provider.setToken(token)
+      state.jwt = token
     },
     deleteJwt(state){
+      localStorage.removeItem('token')
+      provider.removeToken()
       state.jwt = null
     }
   },

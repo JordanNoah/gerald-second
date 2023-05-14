@@ -59,12 +59,11 @@ export default {
                 body.password = this.password
 
                 let response = await this.$provider.signin(body)
-                console.log(response);
-            
-            //this.$store.commit('createJwt')
-            //this.$router.push({name:'main'})
+                if(response.status == 200){
+                    this.$store.commit('createJwt',response.data.token)
+                    this.$router.push({name:'main'})
+                }
             }
-            console.log();
         }
     }
 }

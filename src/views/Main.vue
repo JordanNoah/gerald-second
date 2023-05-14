@@ -1,6 +1,11 @@
 <template>
     <v-container>
         <v-app-bar title="Application bar" app dense elevation="0">
+            <v-btn icon small class="ml-1" @click="sidebar = !sidebar">
+                <v-icon small>
+                   fas fa-bars
+                </v-icon>
+            </v-btn>
             <v-spacer></v-spacer>
             <v-menu bottom min-width="200px" rounded offset-y class="mx-3">
                 <template v-slot:activator="{ on }">
@@ -34,7 +39,7 @@
             </v-menu>
         </v-app-bar>
 
-        <v-navigation-drawer app permanent>
+        <v-navigation-drawer v-model="sidebar" app>
             <v-list>
                 <v-list-item>
                     <v-list-item-content>
@@ -60,6 +65,7 @@
 <script>
   export default {
     data: () => ({
+        sidebar:false,
       menuNavigaton:[
         {text:'Estudiante',link:'student'},
         {text:'Matrículas',link:'enrollments'},

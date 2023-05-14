@@ -23,7 +23,7 @@
                         <v-text-field v-model="search" append-icon="fas fa-search" label="Search" hide-details>
                         </v-text-field>
                     </v-card-title>
-                    <v-data-table :headers="headers" :items="items" :search="search">
+                    <v-data-table :loading="loading" :headers="headers" :items="items" :search="search">
                         <template v-slot:[`item.actions`]="{ item }">
                             <v-icon small class="mx-2" @click="editItem(item)">
                                 far fa-eye
@@ -36,7 +36,7 @@
                 </v-card>
             </v-col>
         </v-row>
-        <v-dialog v-model="dialog" max-width="800">
+        <v-dialog v-model="dialog" max-width="800" @click:outside="closeDialog">
             <v-card>
                 <v-card-title class="d-flex justify-center primary--text text-h5 font-weight-bold">
                     {{selectedStudent ? 'Editar Estudiante': 'Crear Estudiante'}}
@@ -44,17 +44,25 @@
                 <v-container>
                     <v-form>
                         <v-row>
-                            <v-col cols="6">
-                                <v-text-field v-model="student.name" dense hide-details="auto" label="Nombres">
-                                </v-text-field>
-                            </v-col>
-                            <v-col cols="6">
-                                <v-text-field v-model="student.surnames" dense hide-details="auto" label="Apellidos">
+                            <v-col cols="12">
+                                <v-text-field v-model="student.fullName" dense hide-details="auto" label="Full name">
                                 </v-text-field>
                             </v-col>
                             <v-col cols="6">
                                 <v-text-field v-model="student.institutionalEmail" dense hide-details="auto"
                                     label="Correo Institucional"></v-text-field>
+                            </v-col>
+                            <v-col cols="6">
+                                <v-text-field v-model="student.landlineNumber" dense hide-details="auto" label="Teléfono Fijo">
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="6">
+                                <v-text-field v-model="student.movilPhone" dense hide-details="auto"
+                                    label="Teléfono Móvil"></v-text-field>
+                            </v-col>
+                            <v-col cols="6">
+                                <v-text-field v-model="student.personalId" dense hide-details="auto"
+                                    label="Identificación"></v-text-field>
                             </v-col>
                             <v-col cols="6">
                                 <v-text-field v-model="student.personalEmail" dense hide-details="auto"
@@ -65,11 +73,6 @@
                                 </v-text-field>
                             </v-col>
                             <v-col cols="6">
-                                <v-text-field v-model="student.personalId" dense hide-details="auto"
-                                    label="Identificación"></v-text-field>
-                            </v-col>
-                            <v-col cols="6">
-
                                 <v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="40"
                                     transition="scale-transition" offset-y min-width="auto">
                                     <template v-slot:activator="{ on, attrs }">
@@ -79,14 +82,6 @@
                                     <v-date-picker v-model="student.bornDate" @input="menu2 = false"></v-date-picker>
                                 </v-menu>
                                 
-                            </v-col>
-                            <v-col cols="6">
-                                <v-text-field v-model="student.movilPhone" dense hide-details="auto"
-                                    label="Teléfono Móvil"></v-text-field>
-                            </v-col>
-                            <v-col cols="6">
-                                <v-text-field v-model="student.phone" dense hide-details="auto" label="Teléfono Fijo">
-                                </v-text-field>
                             </v-col>
                             <v-col cols="6">
                                 <v-select v-model="student.gender" hide-details="auto" dense :items="availableGenders" item-value="value" item-text="text" label="Género"></v-select>
@@ -117,16 +112,12 @@
                 ],
                 menu2:false,
                 student:{
-                    name: null,
-                    surnames: null,
+                    fullName: null,
                     institutionalEmail: null,
-                    personalEmail: null,
-                    address: null,
-                    personalId: null,
-                    bornDate: null,
+                    landlineNumber: null,
                     movilPhone: null,
-                    phone: null,
-                    gender: null
+                    personalId: null,
+                    personalEmail: null
                 },
                 headerDialog:[
                     {
@@ -151,19 +142,19 @@
                         text: 'Nombre Completo',
                         align: 'start',
                         filterable: false,
-                        value: 'completeName',
+                        value: 'full_name',
                     },
                     {
                         text: 'Correo Institucional',
-                        value: 'institutionalEmail'
+                        value: 'institutional_email'
                     },
                     {
                         text: 'Identificacion',
-                        value: 'detectionId'
+                        value: 'national_identification_number'
                     },
                     {
                         text: 'Telefono Principal',
-                        value: 'mainPhone'
+                        value: 'mobile_number'
                     },
                     {
                         text: 'Acciones',
@@ -172,171 +163,64 @@
                         align: 'center'
                     }
                 ],
-                items: [{
-                    names:'Oliva Claúdia',
-                    surnames:'Frutos Hernandez',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Oliva Claúdia Frutos Hernandez",
-                    institutionalEmail: "olivia.frutos@ejemplo.com",
-                    detectionId: 'G54239652',
-                    mainPhone: ''
-                }, {
-                    names:'Aurelio Pere',
-                    surnames:'Morcillo Perera',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Aurelio Pere Morcillo Perera",
-                    institutionalEmail: "aurelio.mrcillo@ejemplo.com",
-                    detectionId: 'P5234205B',
-                    mainPhone: '9792108863'
-                }, {
-                    names:'Francisco Vidal',
-                    surnames:'Calero Ribas',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Francisco Vidal Calero Ribas",
-                    institutionalEmail: "vidal.calero@ejemplo.com",
-                    detectionId: 'S0196965H',
-                    mainPhone: '2273842412'
-                }, {
-                    names:'Maria-Jesus',
-                    surnames:'Fidalgo Cabanillas',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Maria-Jesus Fidalgo Cabanillas",
-                    institutionalEmail: "maria.fidalgo@ejemplo.com",
-                    detectionId: '03626091A',
-                    mainPhone: '9882204594'
-                }, {
-                    names:'Herminia Azucena',
-                    surnames:'Bermudez Cabanillas',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Herminia Azucena Bermudez Cabanillas",
-                    institutionalEmail: "azusa.bermu@ejemplo.com",
-                    detectionId: '18506066J',
-                    mainPhone: '8739525888'
-                }, {
-                    names:'Adela Lucia',
-                    surnames:'Zambrano Becerra',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Adela Lucia Zambrano Becerra",
-                    institutionalEmail: "adela.becerra@ejemplo.com",
-                    detectionId: '50040025Y',
-                    mainPhone: '6190332621'
-                }, {
-                    names:'Juan-Carlos',
-                    surnames:'Paredes Perera',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Juan-Carlos Paredes Perera",
-                    institutionalEmail: "juan.paredes@ejemplo.com",
-                    detectionId: '55234800R',
-                    mainPhone: '0461810348'
-                }, {
-                    names:'Arsenio Casilda',
-                    surnames:'Aguilera Sepulveda',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Arsenio Casilda Aguilera Sepulveda",
-                    institutionalEmail: "arse.aguilera@ejemplo.com",
-                    detectionId: '43561920N',
-                    mainPhone: '7869357264'
-                }, {
-                    names:'Paulo Guillermo',
-                    surnames:'Castaño Pulido',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Paulo Guillermo Castaño Pulido",
-                    institutionalEmail: "paulo.castaño@ejemplo.com",
-                    detectionId: '07063172X',
-                    mainPhone: '5479631882'
-                }, {
-                    names:'Mayra Lorena',
-                    surnames:'Ramirez Fuentes',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Mayra Lorena Ramirez Fuentes",
-                    institutionalEmail: "mayra.ramirez@ejemplo.com",
-                    detectionId: '82823627Y',
-                    mainPhone: '4416550468'
-                }, {
-                    names:'William Jonatan',
-                    surnames:'Seco Parrilla',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "William Jonatan Seco Parrilla",
-                    institutionalEmail: "william.seco@ejemplo.com",
-                    detectionId: '34181854J',
-                    mainPhone: '5628304589'
-                }, {
-                    names:'Paula Júlia',
-                    surnames:'Roig Bernabeu',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Paula Júlia Roig Bernabeu",
-                    institutionalEmail: "paula.roig@ejemplo.com",
-                    detectionId: '87054896B',
-                    mainPhone: '5335598629'
-                }, {
-                    names:'John Giovanni',
-                    surnames:'Caceres Heredia',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "John Giovanni Caceres Heredia",
-                    institutionalEmail: "john.caceres@ejemplo.com",
-                    detectionId: '50755447J',
-                    mainPhone: '4498478573'
-                }, {
-                    names:'Mercedes Ariadna',
-                    surnames:'Mañas Maya',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Mercedes Ariadna Mañas Maya",
-                    institutionalEmail: "merce.manas@ejemplo.com",
-                    detectionId: '35472990K',
-                    mainPhone: '9259708603'
-                }, {
-                    names:'Teodora Candela',
-                    surnames:'Hermida Rey',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Teodora Candela Hermida Rey",
-                    institutionalEmail: "teodora.hermi@ejemplo.com",
-                    detectionId: '25818735Q',
-                    mainPhone: '3852714758'
-                }, {
-                    names:'Martin Concepcio',
-                    surnames:'Sastre del',
-                    gender:'masculine',
-                    bornDate:'2023-03-11',
-                    completeName: "Martin Concepcio Sastre del Moral",
-                    institutionalEmail: "martin.sastre@ejemplo.com",
-                    detectionId: '58809462A',
-                    mainPhone: '4752519929'
-                }, ],
+                items: [],
                 selectedStudent:null,
+                loading:false
             }
         },
+        mounted:function(){
+            this.getData()
+        },
         methods:{
+            closeDialog(){
+                this.selectedStudent = null;
+                this.student.fullName = null;
+                this.student.institutionalEmail = null;
+                this.student.landlineNumber = null;
+                this.student.movilPhone = null;
+                this.student.personalId = null;
+                this.student.personalEmail = null;
+                this.student.address = null;
+                this.student.bornDate = null;
+                this.student.gender = null;
+            },
+            async getData(){
+                this.loading = true
+                var response = await this.$provider.getStudents()
+                this.items = response.data._embedded.students
+                this.loading = false
+            },
             editItem(item){
-                this.selectedStudent = item.detectionId
-                this.student.name = item.names
-                this.student.surnames = item.surnames
-                this.student.institutionalEmail = item.institutionalEmail
-                this.student.personalEmail = item.personalEmail
+                console.log(item);
+                this.selectedStudent = item.id
+                this.student.fullName = item.full_name
+                this.student.institutionalEmail = item.institutional_email
+                this.student.landlineNumber = item.landline_number
+                this.student.movilPhone = item.mobile_number
+                this.student.personalId = item.national_identification_number
+                this.student.personalEmail = item.personal_email
                 this.student.address = item.address
-                this.student.personalId = item.detectionId
                 this.student.bornDate = item.bornDate
-                this.student.movilPhone = item.movilPhone
-                this.student.phone = item.mainPhone
                 this.student.gender = item.gender
                 this.dialog = true
             },
-            save(){
-                console.log(this.student);
+            async save(){
+                var body = new Object()
+                body.full_name = this.student.fullName
+                body.institutional_email = this.student.institutionalEmail
+                body.personal_email = this.student.personalEmail
+                body.landline_number = this.student.landlineNumber
+                body.mobile_number = this.student.movilPhone
+                body.identification_card = this.student.personalId
+                body.address = this.student.address
+                body.bornDate = this.student.bornDate
+                body.gender = this.student.gender
+
+                var response = await this.$provider.postStudent(body)
+
+                if(response.status == 201){
+                    this.getData()
+                }
             }
         }
     }
