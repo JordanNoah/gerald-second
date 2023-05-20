@@ -77,8 +77,11 @@
         initials: 'JD',
         fullName: 'John Doe',
         email: 'john.doe@doe.com',
-      },
+      }
     }),
+    beforeCreate:function(){
+        this.$provider.setToken(this.$store.getters.getJwt)
+    },
     methods:{
         removeSession(){
             this.$store.commit('deleteJwt')

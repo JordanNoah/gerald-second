@@ -21,6 +21,28 @@ const provider = {
     },
     postStudent: async (body) => {
         return await axios.post(`/students`,body)
+    },
+    //degress
+    getDegress: async () => {
+        return await axios.get(`/degrees`)
+    },
+    //subject
+    getSubjects: async (degree) => {
+        const params = {
+            filters: {
+              degree: degree
+            }
+          };
+        return await axios.get(`/subjects`,{params:params})
+    },
+    getTeachers: async (teacher) => {
+        const params = {
+            filters:{
+                full_name:teacher
+            }
+        }
+        console.log(params);
+        return await axios.get(`/professors`,{params:params})
     }
 }
 
