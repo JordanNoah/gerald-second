@@ -63,10 +63,22 @@
                         <v-text-field v-model="search" append-icon="fas fa-search" label="Search" hide-details></v-text-field>
                     </v-card-title>
                     <v-data-table :headers="headers" :items="items" :search="search">
-                        <template v-slot:[`item.score`]="{ item }">
-                            <v-rating empty-icon="far fa-star" full-icon="fas fa-star" half-icon="fas fa-star-half-alt" hover half-increments length="5" dense color="yellow accent-4" size="20" :value="item.score"></v-rating>
+                        <template v-slot:[`item.rating`]="{ item }">
+                            <v-rating empty-icon="far fa-star" full-icon="fas fa-star" half-icon="fas fa-star-half-alt" hover half-increments length="5" dense color="yellow accent-4" size="20" :value="item.rating"></v-rating>
                         </template>
-                        <template v-slot:[`item.coments`]="{ item }">
+                        <template v-slot:[`item.rating_totals.NoAssistance`]="{ item }">
+                            <span>{{item.rating_totals[0].total}}</span>
+                        </template>
+                        <template v-slot:[`item.rating_totals.Bad`]="{ item }">
+                            <span>{{item.rating_totals[1].total}}</span>
+                        </template>
+                        <template v-slot:[`item.rating_totals.Regular`]="{ item }">
+                            <span>{{item.rating_totals[2].total}}</span>
+                        </template>
+                        <template v-slot:[`item.rating_totals.Good`]="{ item }">
+                            <span>{{item.rating_totals[3].total}}</span>
+                        </template>
+                        <template v-slot:[`item.actions`]="{ item }">
                             <v-icon small class="mx-2" @click="seeMoreComment(item)">
                                 far fa-eye
                             </v-icon>
@@ -116,139 +128,62 @@ export default {
                     text: 'Asignatura',
                     filterable: false,
                     sortable: false,
-                    value: 'asignatura'
+                    value: 'class.subject.name'
                 },
                 {
                     text: 'Profesor',
                     filterable: false,
                     sortable: false,
-                    value: 'profesor'
+                    value: 'class.professor.full_name'
                 },
                 {
                     text: 'Grupo',
                     filterable: false,
                     sortable: false,
-                    value: 'grupo'
+                    value: 'class.group_section'
                 },
                 {
-                    text: 'Calificación',
+                    text: 'No asistió',
                     filterable: false,
                     sortable: false,
-                    value: 'score',
-                    align:'center'
+                    value: 'rating_totals.NoAssistance'
                 },
                 {
-                    text: 'Comentario',
+                    text: 'Mala',
                     filterable: false,
                     sortable: false,
-                    value: 'coments',
-                    align:'center'
+                    value: 'rating_totals.Bad'
+                },
+                {
+                    text: 'Regular',
+                    filterable: false,
+                    sortable: false,
+                    value: 'rating_totals.Regular'
+                },
+                {
+                    text: 'Buena',
+                    filterable: false,
+                    sortable: false,
+                    value: 'rating_totals.Good'
+                },
+                {
+                    text: 'Acciones',
+                    filterable: false,
+                    sortable: false,
+                    value: 'actions'
                 }
             ],
-            items: [{
-                    asignatura: 'matemáticas II',
-                    profesor: 'Emilio Daniela Galindo Navarro',
-                    grupo: 'AJ-001',
-                    score: 4
-                },
-                {
-                    asignatura: 'ingles i',
-                    profesor: 'Meritxell Angelina Olmedo Rial',
-                    grupo: 'AJ-001',
-                    score: 4
-                },
-                {
-                    asignatura: 'simulación de sistemas',
-                    profesor: 'Sabina Joana Giner Arnaiz',
-                    grupo: 'AJ-002',
-                    score: 4
-                },
-                {
-                    asignatura: 'lenguaje y comunicación',
-                    profesor: 'Gonzalo Gracia Pérez Herrero',
-                    grupo: 'AJ-001',
-                    score: 4
-                },
-                {
-                    asignatura: 'simulación de sistemas',
-                    profesor: 'Thais Nina Jover Aguado',
-                    grupo: 'AJ-001',
-                    score: 4
-                },
-                {
-                    asignatura: 'matemáticas II',
-                    profesor: 'Maria-Emilia Montilla Pérez',
-                    grupo: 'AJ-002',
-                    score: 4
-                },
-                {
-                    asignatura: 'matemáticas II',
-                    profesor: 'Teodora Gines Baeza Martnez',
-                    grupo: 'AJ-003',
-                    score: 4
-                },
-                {
-                    asignatura: 'ingles i',
-                    profesor: 'Sarah Alex Martín Baez',
-                    grupo: 'AJ-002',
-                    score: 4
-                },
-                {
-                    asignatura: 'simulación de sistemas',
-                    profesor: 'Roman Claudio Barranco Roig',
-                    grupo: 'AJ-002',
-                    score: 4
-                },
-                {
-                    asignatura: 'simulación de sistemas',
-                    profesor: 'Montse Mia Vera Prado',
-                    grupo: 'AJ-004',
-                    score: 4
-                },
-                {
-                    asignatura: 'lenguaje y comunicación',
-                    profesor: 'Óscar Abraham Vegas Mesa',
-                    grupo: 'AJ-004',
-                    score: 4
-                },
-                {
-                    asignatura: 'matemáticas II',
-                    profesor: 'Concepcio Fidel Olmos Sastre',
-                    grupo: 'AJ-004',
-                    score: 4
-                },
-                {
-                    asignatura: 'Inteligencia artificial',
-                    profesor: 'Palmira Fatima Prado Machado',
-                    grupo: 'AJ-003',
-                    score: 4
-                },
-                {
-                    asignatura: 'lenguaje y comunicación',
-                    profesor: 'Daniel Fulgencio Angulo Llanos',
-                    grupo: 'AJ-003',
-                    score: 4
-                },
-                {
-                    asignatura: 'simulación de sistemas',
-                    profesor: 'Adriana Aurelio Grau Villaverde',
-                    grupo: 'AJ-003',
-                    score: 4
-                },
-                {
-                    asignatura: 'ingles i',
-                    profesor: 'Rebeca Ainara Castañeda Cañizares',
-                    grupo: 'AJ-002',
-                    score: 4
-                }
-            ]
+            items: [],
+            options:{
+                page:1
+            }
         }
     },
     mounted: async function(){
         await this.getDegress()
         this.changeFocusTeacher()
         await this.getTeachers()
-
+        await this.getClassGradeTotals()
     },
     watch:{
         filterDegree(){
@@ -259,8 +194,15 @@ export default {
         }
     },
     methods:{
-        seeMoreComment(){
-            this.dialogComment = true
+        async getClassGradeTotals(){
+            var response = await this.$provider.getClassGradeTotals(this.options)
+            console.log(response);
+            if (response.status == 200) {
+                this.items = response.data._embedded.class_grade_totals
+            }
+        },
+        seeMoreComment(item){
+            this.$router.replace({name:'viewMoreScore',params:{uuid:item.id}})
         },
         async getDegress(){
             this.loadingDegrees = true
@@ -283,7 +225,6 @@ export default {
             if(response.status == 200){
                 this.teachers = response.data._embedded.professors
             }
-            console.log(response);
         },
         activateHelperTeacher(){
             document.getElementById('listFilterTeacher').style.display = 'block';

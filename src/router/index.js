@@ -8,13 +8,16 @@ import VueRouter from 'vue-router'
 import Enrollment from '../views/Enrollment'
 import Inspection from '../views/Inspection'
 import Main from '../views/Main'
-import Scores from '../views/Scores'
 import Student from '../views/Student'
 import Tutorials from '../views/Tutorials'
 
 import Login from '../views/Login'
 import Register from '../views/Register'
-
+//scores
+import MainScores from '../views/Scores/Main'
+import Scores from '../views/Scores/Scores'
+import ViewMoreScore from '../views/Scores/ViewMoreScore'
+//
 import store from '@/store'
 
 Vue.use(VueRouter)
@@ -70,7 +73,22 @@ const routes = [
       {
         path:'scores',
         name: 'scores',
-        component:Scores
+        component:MainScores,
+        redirect:{
+          name:'allScores'
+        },
+        children:[
+          {
+            path:':uuid',
+            name:'viewMoreScore',
+            component:ViewMoreScore
+          },
+          {
+            path:'all',
+            name:'allScores',
+            component:Scores
+          }
+        ]
       },
       {
         path:'inspections',

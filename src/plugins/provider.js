@@ -41,8 +41,17 @@ const provider = {
                 full_name:teacher
             }
         }
-        console.log(params);
         return await axios.get(`/professors`,{params:params})
+    },
+    getClassGradeTotals: async (options) => {
+        return await axios.get(`/class-grade-totals`,{params:options})
+    },
+    getGrades: async (uuidGrade) => {
+        const params = {
+            page:1,
+            class:uuidGrade
+        }
+        return await axios.get(`/grades`,{params:params})
     }
 }
 
