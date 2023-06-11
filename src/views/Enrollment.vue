@@ -154,7 +154,7 @@
                         title:'Titulacion ejemplo'
                     }
                 ],
-                dialog:true,
+                dialog:false,
                 search: '',
                 headers: [{
                         text: 'Nombre Completo',
