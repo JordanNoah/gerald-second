@@ -12,6 +12,7 @@ import Student from '../views/Student'
 import Tutorials from '../views/Tutorials'
 
 import Login from '../views/Login'
+import RecoverPassword from '../views/RecoverPassword'
 import Register from '../views/Register'
 //scores
 import MainScores from '../views/Scores/Main'
@@ -38,6 +39,15 @@ const routes = [
       else next({name:'main'})
     },
     component:Login
+  },
+  {
+    path:'/recoverpassword',
+    name:'recoverpassword',
+    beforeEnter:(to,from,next) => {
+      if (!store.state.jwt) next()
+      else next({name:'main'})
+    },
+    component:RecoverPassword
   },
   {
     path:'/register',

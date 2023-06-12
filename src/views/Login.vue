@@ -22,9 +22,12 @@
                                 </v-col>
                             </v-row>
                         </v-container>
-                        <v-card-actions class="d-flex justify-center">
+                        <v-card-actions class="d-flex justify-space-between">
                             <v-btn depressed @click="initSession()">
                                 Sign In
+                            </v-btn>
+                            <v-btn text small depressed @click="recoverPasswordView()">
+                                ¿Olvidaste tu contraseña?
                             </v-btn>
                         </v-card-actions>
                     </v-card>
@@ -64,6 +67,9 @@ export default {
                     this.$router.push({name:'main'})
                 }
             }
+        },
+        recoverPasswordView(){
+            this.$router.push({name:'recoverpassword'})
         }
     }
 }
